@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:9.3.0
+    container_name: streaming_platform
+    environment:
+      MYSQL_ROOT_PASSWORD: sechiaccheratedellaltrovifacciospostare
+      MYSQL_DATABASE: streaming_platform_db
+    ports:
+      - 3010:3306
+    volumes:
+      - streaming_platform_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  streaming_platform_data:
