@@ -14,8 +14,8 @@ import it.eliasmiloud.model.Film;
 
 public class FilmRepository {
 
-	public ArrayList<Film> findAll(String query) throws DatabaseException {
-		
+	public ArrayList<Film> findAll() throws DatabaseException {
+		String query = "SELECT * FROM film";
 		ArrayList<Film> film = new ArrayList<Film>();
 		try {
 			Connection connection = DatabaseConnection.getConnection();
@@ -91,7 +91,38 @@ public class FilmRepository {
 			}
 			return affectedRows;
 		}
-	
+		
+		public ArrayList<Film> orderBydurata() throws DatabaseException {
+		    String query = "SELECT * FROM film ORDER BY durata_minuti ASC";
+		    ArrayList<Film> listaFilm = new ArrayList<>();
+		    
+		    // Uso il try-with-resources per chiudere automaticamente le risorse
+		    try (Connection connection = DatabaseConnection.getConnection();
+		         Statement stmt = connection.createStatement();
+		         ResultSet results = stmt.executeQuery(query)) {
+
+		        while (results.next()) {
+		            // Recupera TUTTI i campi necessari per l'oggetto Film
+		        	int id = results.getInt("id");
+					String titolo = results.getString("titolo");
+					String regista = results.getString("regista");
+					String genere = results.getString("genere");
+					int durata_minuti = results.getInt("durata_minuti");
+					Date data_uscita = results.getDate("data_uscita");
+					double voto_medio = results.getDouble("voto_medio");
+					boolean disponibilità = results.getBoolean("disponibilità");
+
+		            // Crea l'oggetto Film completo
+		            Film f = new Film(id, titolo, regista, genere, durata_minuti, data_uscita, voto_medio, disponibilità);
+		            listaFilm.add(f);
+		        }
+		    } catch (SQLException e) {
+		        // Rilancia l'eccezione personalizzata
+		        throw new DatabaseException("Errore durante la lettura dal database");
+		    }
+		    return listaFilm;
+		}
+		
 	
 	
 	
